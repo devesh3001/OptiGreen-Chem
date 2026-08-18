@@ -1,0 +1,51 @@
+gnn:
+  # Architecture
+  hidden_dim: 64
+  heads: 4           # GAT attention heads (first layer)
+  out_heads: 1       # GAT attention heads (final layer)
+  dropout: 0.3
+  n_layers: 2
+
+  # Input feature dimensions (set by graph_dataset.py)
+  # node_feature_dim = 12 (7 structural + 5 product one-hot)
+  # edge_feature_dim = 4
+
+  # Training
+  learning_rate: 0.001
+  weight_decay: 0.0005
+  epochs: 100
+  patience: 15        # early stopping
+  seed: 42
+  batch_size: 32
+
+  # Class imbalance handling: 'class_weight' or 'focal_loss'
+  imbalance_strategy: 'class_weight'
+  pos_weight: 10.0   # BCE positive class weight (tuned for ~4.8% stockout rate)
+
+  # Snapshot generation
+  window_weeks: 4    # rolling features window (weeks of history)
+  horizon_weeks: 1   # prediction horizon (1 week ahead)
+
+  # Temporal split (fraction of weekly snapshots)
+  train_frac: 0.70
+  val_frac: 0.15
+  # test_frac = 1 - train_frac - val_frac = 0.15
+
+  # Disruption scenarios
+  disruption_scenarios:
+    plant_capacity_reduction:
+      plant_id: "P1"
+      capacity_fraction: 0.6   # reduce to 60% of normal
+    warehouse_reduction:
+      warehouse_id: "W2"
+      capacity_fraction: 0.5
+    demand_spike:
+      regions: ["R1", "R2", "R3"]
+      spike_multiplier: 2.0
+    route_disruption:
+      source: "P2"
+      destination: "W1"
+      capacity_fraction: 0.1
+    combined:
+      plant_capacity_fraction: 0.7
+      demand_spike_multiplier: 1.5

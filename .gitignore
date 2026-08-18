@@ -1,0 +1,35 @@
+# Environments
+.venv/
+venv/
+env/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs and temp
+*.log
+tmp/
+temp/
+
+# Secrets
+.env
+.env.*
+
+# Ignore large raw data (optional), but KEEP required
+# We keep data/synthetic, data/processed, and models/

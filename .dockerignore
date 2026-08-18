@@ -1,0 +1,36 @@
+.git
+.github
+.gitignore
+.venv
+venv
+env
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache
+.coverage
+htmlcov
+.vscode
+.idea
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+*.log
+tmp
+temp
+.env
+.env.*
+
+# Development files
+tests/
+notebooks/
+docs/
+dashboard/
+scripts/
+
+# Keep data and models!
+!data/synthetic
+!data/processed
+!models/
