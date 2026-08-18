@@ -85,8 +85,10 @@ def load_models_and_providers(_demand, _plants, _wh, _regions, _routes_pw, _rout
         
         # 3. GAT Risk
         # Build minimal graph to get metadata
+        # Build minimal graph to get metadata - use only recent data to save memory
+        recent_demand = _demand.tail(5000).copy()
         train_data, val_data, test_data, metadata = build_graph_dataset(
-            _demand, _plants, _wh, _regions, _routes_pw, pd.DataFrame(),
+            recent_demand, _plants, _wh, _regions, _routes_pw, pd.DataFrame(),
             window_weeks=config['gnn']['window_weeks'],
             train_frac=config['gnn']['train_frac'],
             val_frac=config['gnn']['val_frac'],
