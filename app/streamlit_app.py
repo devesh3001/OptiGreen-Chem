@@ -34,8 +34,12 @@ st.set_page_config(
 # --- Caching Data ---
 @st.cache_data
 def load_config():
+    config = {}
     with open(ROOT_DIR / "configs" / "optimization.yaml") as f:
-        return yaml.safe_load(f)
+        config.update(yaml.safe_load(f))
+    with open(ROOT_DIR / "configs" / "gnn_config.yaml") as f:
+        config.update(yaml.safe_load(f))
+    return config
 
 @st.cache_data
 def load_datasets():
