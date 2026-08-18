@@ -149,6 +149,11 @@ def apply_disruption(scenario, p, w, r, d):
         
     return p, w, r, d
 
+# --- UI Startup Marker ---
+startup_placeholder = st.empty()
+with startup_placeholder.container():
+    st.info("Loading OptiGreen-Chem AI Models and Datasets. Please wait...")
+
 # --- Load state ---
 try:
     config = load_config()
@@ -156,11 +161,14 @@ try:
     forecast_provider, xgb_provider, gat_provider = load_models_and_providers(
         demand_df, plants_df, wh_df, regions_df, routes_pw, routes_wr, pxgb_preds, risk_features, config
     )
+    startup_placeholder.empty()
 except FileNotFoundError as e:
+    startup_placeholder.empty()
     st.error(f"Required artifact missing: {str(e)}")
     st.info("Ensure all model and data artifacts are present in the models/ and data/ directories.")
     st.stop()
 except Exception as e:
+    startup_placeholder.empty()
     st.error(f"Error during startup: {str(e)}")
     st.stop()
 
