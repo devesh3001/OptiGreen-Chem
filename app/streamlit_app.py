@@ -150,11 +150,19 @@ def apply_disruption(scenario, p, w, r, d):
     return p, w, r, d
 
 # --- Load state ---
-config = load_config()
-demand_df, plants_df, wh_df, prods_df, regions_df, routes_pw, routes_wr, pxgb_preds, risk_features = load_datasets()
-forecast_provider, xgb_provider, gat_provider = load_models_and_providers(
-    demand_df, plants_df, wh_df, regions_df, routes_pw, routes_wr, pxgb_preds, risk_features, config
-)
+try:
+    config = load_config()
+    demand_df, plants_df, wh_df, prods_df, regions_df, routes_pw, routes_wr, pxgb_preds, risk_features = load_datasets()
+    forecast_provider, xgb_provider, gat_provider = load_models_and_providers(
+        demand_df, plants_df, wh_df, regions_df, routes_pw, routes_wr, pxgb_preds, risk_features, config
+    )
+except FileNotFoundError as e:
+    st.error(f"Required artifact missing: {str(e)}")
+    st.info("Ensure all model and data artifacts are present in the models/ and data/ directories.")
+    st.stop()
+except Exception as e:
+    st.error(f"Error during startup: {str(e)}")
+    st.stop()
 
 # --- UI Sidebar ---
 st.sidebar.title("🌿 OptiGreen-Chem")
