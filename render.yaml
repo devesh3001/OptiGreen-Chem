@@ -5,8 +5,5 @@ services:
     region: ohio
     plan: standard
     healthCheckPath: /
-    envVars:
-      - key: PORT
-        value: "8501"
       - key: PYTHONPATH
         value: "/app/src"
