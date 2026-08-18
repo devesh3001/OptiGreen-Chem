@@ -129,8 +129,7 @@ def load_models_and_providers(_demand, _plants, _wh, _regions, _routes_pw, _rout
         return provider, xgb_provider, gat_provider
         
     except Exception as e:
-        st.error(f"Error loading models: {str(e)}")
-        st.stop()
+        raise e
 
 # --- Helper logic ---
 def apply_disruption(scenario, p, w, r, d):
