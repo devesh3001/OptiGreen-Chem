@@ -1,0 +1,13 @@
+# Runtime dependencies for the Streamlit dashboard only (PyTorch is NOT needed).
+# Streamlit Community Cloud reads this file because it sits next to the entry point;
+# the Dockerfile installs it too. The pickled models in results/stage2 were produced with
+# numpy 2.x, pandas 3.x, scikit-learn 1.9 and xgboost 3.x, so keep those major versions.
+numpy>=2.0,<3
+pandas>=3.0,<4
+scipy>=1.11
+scikit-learn>=1.9,<2
+xgboost>=3.0,<4
+pyomo>=6.7
+highspy>=1.7
+streamlit>=1.50
+plotly>=5.18

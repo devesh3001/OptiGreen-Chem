@@ -1,0 +1,39 @@
+data:
+  seed: 42
+  start_date: "2023-01-01"
+  end_date: "2025-12-31"  # 3 years
+  n_plants: 4
+  n_warehouses: 8
+  n_regions: 20
+  n_products: 5
+
+  # Relationships & Costs
+  plant:
+    min_capacity: 10000
+    max_capacity: 50000
+    min_fixed_cost: 50000
+    max_fixed_cost: 200000
+    min_variable_cost: 10
+    max_variable_cost: 50
+    emission_factor_range: [1.5, 3.5] # CO2 per unit
+
+  warehouse:
+    min_capacity: 5000
+    max_capacity: 25000
+    min_holding_cost: 2
+    max_holding_cost: 8
+
+  demand:
+    base_min: 100
+    base_max: 1500
+    trend_range: [-0.005, 0.015] # linear trend factor
+    seasonality_amplitude: 0.3
+    noise_level: 0.1
+    shock_probability: 0.01 # probability of demand shock per day per region
+    shock_magnitude_range: [1.5, 3.0]
+
+  transport:
+    cost_per_km_per_unit: 0.05
+    emissions_per_km_per_unit: 0.02
+    speed_km_per_day: 600
+    delay_probability: 0.05

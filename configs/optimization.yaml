@@ -1,0 +1,67 @@
+optimization:
+  solver: "highs"
+  time_limit: 120  # seconds per solve
+  mip_gap: 0.01
+
+  # Planning Horizon
+  horizon_days: 7
+
+  # Initial Inventory (fraction of warehouse capacity)
+  initial_inventory_fraction: 0.4
+
+  # Shortage / Backorder Penalty (per unit per day)
+  # Must exceed production_cost + transport_cost to incentivize serving demand.
+  # Avg serve cost ≈ $60-85/unit, so penalty = 200 ensures serving is always preferred.
+  shortage_penalty: 200.0
+
+  # Holding cost override — if null uses warehouse-specific cost from data
+  holding_cost_override: null
+
+  # Warehouse→Region transport cost and carbon (per unit per km)
+  wh_region_transport_cost_per_unit_km: 0.05
+  wh_region_carbon_factor_per_unit_km: 0.02
+
+  # Service Level Target (soft constraint via penalty scaling)
+  service_level_target: 0.95
+
+  # Multi-Objective Weights (lambda coefficients)
+  weights:
+    cost: 1.0
+    carbon: 0.0     # Policy A/B/C: set to 0. Policy D/E: set > 0
+    risk: 0.0       # Policy D: set > 0
+
+  # Carbon weight sweep for Pareto frontier
+  # Note: carbon costs are in emission units; kept small to not dominate cost objective
+  carbon_lambda_sweep: [0.0, 0.01, 0.05, 0.1, 0.2, 0.5]
+
+  # Monte Carlo
+  monte_carlo:
+    n_samples: 100
+    seed: 42
+    # Uncertainty model: actual spread from P10/P90 used as std
+    std_multiplier: 1.0
+
+scenarios:
+  baseline:
+    name: "Baseline (Fixed Reorder)"
+    description: "Simple rule-based policy: order P50 demand each day"
+
+  p50_milp:
+    name: "P50 MILP"
+    demand_mode: "p50"
+    weights: {cost: 1.0, carbon: 0.0, risk: 0.0}
+
+  p90_milp:
+    name: "P90 MILP"
+    demand_mode: "p90"
+    weights: {cost: 1.0, carbon: 0.0, risk: 0.0}
+
+  risk_aware_milp:
+    name: "Risk-Aware MILP"
+    demand_mode: "p50"
+    weights: {cost: 1.0, carbon: 0.0, risk: 5.0}
+
+  sustainable_risk_milp:
+    name: "Sustainable Risk-Aware MILP"
+    demand_mode: "p50"
+    weights: {cost: 1.0, carbon: 2.0, risk: 5.0}

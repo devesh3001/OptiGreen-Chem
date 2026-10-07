@@ -1,0 +1,12 @@
+# Render Blueprint: Dashboard -> Blueprints -> New Blueprint Instance -> pick this repo.
+# The dashboard peaks at about 0.5 GB of memory, so the 1 CPU / 2 GB plan is the safe
+# choice; the 512 MB plans ("free", "0.5c-512mb") may restart under load.
+services:
+  - type: web
+    name: optigreen-chem
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    region: singapore
+    plan: 1c-2g
+    healthCheckPath: /_stcore/health
+    autoDeployTrigger: commit

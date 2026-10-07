@@ -1,0 +1,22 @@
+# Core (Stage 2 real-data pipeline + dashboard). Versions are the ones the
+# results in results/stage2 were produced with; newer minor versions work.
+numpy>=1.26
+pandas>=2.1
+scipy>=1.11
+scikit-learn>=1.4
+xgboost>=2.0          # verified with 3.4.1 (reg:quantileerror needs >= 2.0)
+pyomo>=6.7            # verified with 6.10.1
+highspy>=1.7          # HiGHS MILP solver, verified with 1.15.1
+torch>=2.2            # CPU build is enough: pip install torch --index-url https://download.pytorch.org/whl/cpu
+networkx>=3.0
+pyyaml>=6.0
+streamlit>=1.30
+plotly>=5.18
+matplotlib>=3.8
+pytest>=7.0
+
+# Legacy synthetic pipeline (scripts/run_phase*.py, Stage 1 test network) only
+torch-geometric>=2.3
+pytorch-lightning>=2.0
+pandera>=0.16
+seaborn>=0.12
