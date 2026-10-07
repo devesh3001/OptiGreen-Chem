@@ -81,7 +81,7 @@ summary = load_summary()
 st.sidebar.title("🌿 OptiGreen-Chem")
 st.sidebar.caption("Stage 2 · real U.S. EIA refined-products data")
 tab = st.sidebar.radio("Navigation", ["Overview", "Demand forecast", "Risk intelligence", "Optimization",
-                                      "Sustainability", "Robustness & backtest", "Validation"])
+                                      "Sustainability", "Validation"])
 
 
 # --------------------------------------------------------------------------- #
@@ -106,8 +106,8 @@ prime-supplier sales 1993-2022 (demand), refining-district capacity, utilisation
 **Pipeline.** (1) quantile XGBoost gives P10/P50/P90 demand for every state × product, 1-3 months ahead;
 (2) outage models (XGBoost, graph attention network) give the probability that each refining district loses
 throughput; (3) a Pyomo/HiGHS MILP plans crude runs, pipeline/tanker/barge shipments (integer cargoes),
-imports, inventories and deliveries; (4) cost and CO₂ are traded off with a carbon price, and plans are
-re-scored against what actually happened (actual demand, actual outages).
+imports, inventories and deliveries; (4) cost and CO₂ are traded off with a carbon price, and planned flows
+are checked against the flows EIA actually recorded.
 """)
     if ds:
         st.subheader("Dataset")
@@ -291,30 +291,6 @@ elif tab == "Sustainability":
     st.plotly_chart(fig, width="stretch")
     st.dataframe(agg.style.format("{:,.2f}"))
     st.caption("Mean over 2019 planning origins; each point is a full MILP solve. Labels: carbon price in $/t CO₂.")
-
-elif tab == "Robustness & backtest":
-    st.title("Backtest: plans re-scored against what actually happened")
-    bs = load_csv("backtest_summary.csv")
-    bo = load_csv("backtest_by_origin.csv")
-    if bs is None:
-        missing_results()
-    per = st.selectbox("Period", ["all", "2018-2019", "2020-2021"])
-    s = bs[bs["period"] == per].set_index("strategy")
-    st.dataframe(s[["real_fill_volume", "real_unmet_kt", "real_cost_supply_chain_musd", "real_cost_total_musd",
-                    "real_co2_total_kt", "real_emergency_imports_kt"]]
-                 .style.format({"real_fill_volume": "{:.3%}", "real_unmet_kt": "{:,.0f}",
-                                "real_cost_supply_chain_musd": "{:,.0f}", "real_cost_total_musd": "{:,.0f}",
-                                "real_co2_total_kt": "{:,.0f}", "real_emergency_imports_kt": "{:,.0f}"}))
-    st.caption("Each origin: plan 3 months with forecasts/risk known at the time, then fix crude runs (−10 %/+5 % recourse), "
-               "chartered cargoes and contracted imports, and re-optimise dispatch against actual demand and actual "
-               "refinery availability. Cost totals include penalty valuations for unmet demand and end-stock shortfall.")
-    fig = px.line(bo, x="origin", y="real_cost_total_musd", color="strategy")
-    st.plotly_chart(fig, width="stretch")
-    mc = load_csv("monte_carlo_2019-08.csv")
-    if mc is not None:
-        st.subheader("Monte Carlo, Aug–Oct 2019 (sampled demand and outages)")
-        st.plotly_chart(px.box(mc, x="strategy", y="cost_total_musd", points="all"), width="stretch")
-        st.dataframe(mc.groupby("strategy")[["fill_rate", "unmet_kt", "cost_total_musd", "co2_total_kt"]].describe().T)
 
 elif tab == "Validation":
     st.title("Does the optimiser behave like the real system?")
