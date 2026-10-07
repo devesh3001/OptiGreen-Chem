@@ -136,9 +136,10 @@ elif tab == "Demand forecast":
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=list(sub["target_month"]) + list(sub["target_month"])[::-1],
                              y=list(sub["P90"]) + list(sub["P10"])[::-1], fill="toself",
-                             fillcolor="rgba(21,101,192,0.18)", line=dict(width=0), name="P10–P90"))
-    fig.add_trace(go.Scatter(x=sub["target_month"], y=sub["P50"], name="P50", line=dict(color="#1565c0", dash="dash")))
-    fig.add_trace(go.Scatter(x=hist["month"], y=hist["kt"], name="Actual", line=dict(color="#222")))
+                             fillcolor="rgba(57,135,229,0.22)", line=dict(width=0), name="P10–P90"))
+    fig.add_trace(go.Scatter(x=sub["target_month"], y=sub["P50"], name="P50", line=dict(color="#3987e5", dash="dash")))
+    # orange stays readable on both the light and the dark Streamlit theme
+    fig.add_trace(go.Scatter(x=hist["month"], y=hist["kt"], name="Actual", line=dict(color="#e8590c", width=2)))
     fig.add_trace(go.Scatter(x=sub["target_month"], y=sub["snaive_growth"], name="Seasonal naive + growth",
                              line=dict(color="#999", dash="dot")))
     fig.update_layout(height=460, yaxis_title="kt per month", margin=dict(t=10))
@@ -268,7 +269,10 @@ elif tab == "Optimization":
         st.dataframe(res.flows_dh.assign(month=res.flows_dh["month"].dt.strftime("%Y-%m")).round(1))
         st.subheader("Shortages")
         sh = res.shortages[res.shortages["short_kt"] > 1e-3]
-        st.dataframe(sh) if len(sh) else st.success("No planned shortage in any state/product/month.")
+        if len(sh):
+            st.dataframe(sh)
+        else:
+            st.success("No planned shortage in any state/product/month.")
 
 elif tab == "Sustainability":
     st.title("Cost vs CO₂ (carbon-price sweep)")
